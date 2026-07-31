@@ -2,195 +2,75 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>AKASHIKI Works Finder｜条件から制作実績を探す</title>
     <meta
       name="description"
-      content="AKASHIKI Works Finder の React + TypeScript 再構築に向けた初期土台。"
+      content="AKASHIKI（墨家）の制作実績を、業種・サイト種別・制作目的・技術要素の4軸で絞り込んで探せる検索ツール。LPからマルチページのブランドサイトまで、公開中の全24件を掲載しています。"
     />
-    <meta name="theme-color" content="#18202b" />
-    <link
-      rel="icon"
-      href="/assets/images/meta/favicon.svg"
-      type="image/svg+xml"
-      sizes="any"
+    <meta name="theme-color" content="#08090a" />
+    <link rel="canonical" href="https://sumiyakaa.github.io/works-finder/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AKASHIKI Works Finder" />
+    <meta property="og:title" content="AKASHIKI Works Finder｜条件から制作実績を探す" />
+    <meta
+      property="og:description"
+      content="業種・サイト種別・制作目的・技術要素の4軸で、AKASHIKI の制作実績を絞り込んで探せる検索ツール。"
     />
-    <link
-      rel="apple-touch-icon"
-      href="/assets/images/meta/apple-touch-icon.png"
-    />
+    <meta property="og:url" content="https://sumiyakaa.github.io/works-finder/" />
+    <meta property="og:image" content="https://sumiyakaa.github.io/works-finder/assets/images/meta/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/assets/images/meta/favicon.svg" type="image/svg+xml" sizes="any" />
+    <link rel="apple-touch-icon" href="/assets/images/meta/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Noto+Sans+JP:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    <title>AKASHIKI Works Finder</title>
-    <style>
-      :root {
-        color-scheme: light dark;
-      }
 
+    <script>
+      // 初回ペイント前にテーマを確定させ、切り替わりのちらつきを防ぐ
+      (function () {
+        try {
+          var stored = localStorage.getItem('ads-theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+
+    <style>
+      /* バンドル読み込み前の地色。globals.css のトークンと同値 */
+      html[data-theme='dark'] body {
+        background: #08090a;
+        color: #f7f8f8;
+      }
+      html[data-theme='light'] body {
+        background: #fbfbfb;
+        color: #08090a;
+      }
       body {
         margin: 0;
         min-width: 320px;
-        background: #0e141b;
-        color: #eef3f8;
-        font-family: "Avenir Next", "Segoe UI", "Hiragino Sans", "Yu Gothic",
-          sans-serif;
-      }
-
-      /* ── Opening / Loading ─────────────────────────────── */
-      .loading {
-        position: fixed;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        background: #0f1d32;
-        z-index: 12000;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-      }
-
-      .loading__logo {
-        position: relative;
-        z-index: 2;
-        opacity: 0;
-        transform: scale(.88) translateY(8px);
-        transition: opacity .7s cubic-bezier(.16,1,.3,1),
-                    transform .7s cubic-bezier(.16,1,.3,1);
-      }
-
-      .loading__logo img {
-        display: block;
-        width: min(70vw, 640px);
-        height: auto;
-        filter: drop-shadow(0 0 60px rgba(100, 180, 255, .35))
-                drop-shadow(0 0 20px rgba(160, 130, 255, .25));
-      }
-
-      .loading__line {
-        position: relative;
-        z-index: 2;
-        width: min(60vw, 540px);
-        height: 6px;
-        margin-top: 48px;
-        background: rgba(255, 255, 255, .1);
-        border-radius: 6px;
-        overflow: hidden;
-        opacity: 0;
-        transition: opacity .4s ease;
-      }
-
-      .loading__line::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 0;
-        height: 100%;
-        border-radius: 6px;
-        background: linear-gradient(90deg, #4a9eff, #7b6eff, #a78bfa, #4a9eff);
-        background-size: 200% 100%;
-      }
-
-      /* Visible state */
-      .loading.is-visible .loading__logo {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-
-      .loading.is-visible .loading__line {
-        opacity: 1;
-      }
-
-      .loading.is-visible .loading__line::after {
-        animation: loadingProgress 1.5s cubic-bezier(.25,.46,.45,.94) forwards,
-                   loadingShimmer 1.2s linear infinite;
-      }
-
-      /* Exit state */
-      .loading.is-exit {
-        opacity: 0;
-        transform: scale(1.03);
-        transition: opacity .5s cubic-bezier(.4,0,.2,1),
-                    transform .5s cubic-bezier(.4,0,.2,1);
-      }
-
-      .loading.is-exit .loading__logo {
-        opacity: 0;
-        transform: translateY(-14px) scale(1.02);
-        transition: opacity .35s ease, transform .35s ease;
-      }
-
-      .loading.is-exit .loading__line {
-        opacity: 0;
-        transition: opacity .25s ease;
-      }
-
-      @keyframes loadingProgress {
-        0% { width: 0; }
-        100% { width: 100%; }
-      }
-
-      @keyframes loadingShimmer {
-        0% { background-position: 200% 0; }
-        100% { background-position: 0% 0; }
-      }
-
-      @media screen and (max-width: 768px) {
-        .loading__logo img {
-          width: 80vw;
-        }
-        .loading__line {
-          width: 75vw;
-          margin-top: 32px;
-        }
+        font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          'Hiragino Sans', 'Yu Gothic', sans-serif;
       }
     </style>
   </head>
   <body>
-    <!-- Opening -->
-    <div id="loading" class="loading">
-      <div class="loading__logo">
-        <img src="/assets/images/meta/logo-white.png" alt="AKASHIKI" width="512" height="512">
-      </div>
-      <div class="loading__line"></div>
-    </div>
-
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-
-    <script>
-      window.addEventListener('load', function () {
-        var loading = document.getElementById('loading');
-        if (!loading) return;
-
-        // Deep-link: skip opening
-        if (location.hash && document.querySelector(location.hash)) {
-          loading.remove();
-          document.body.classList.add('is-loaded');
-          return;
-        }
-
-        window.scrollTo(0, 0);
-
-        // Phase 1: Logo + progress bar appear
-        loading.classList.add('is-visible');
-
-        // Phase 2: 1.5s fill → 0.5s exit → remove
-        setTimeout(function () {
-          loading.classList.add('is-exit');
-          setTimeout(function () {
-            loading.remove();
-            document.body.classList.add('is-loaded');
-          }, 500);
-        }, 1500);
-      });
-    </script>
   </body>
 </html>

@@ -817,6 +817,16 @@ export const getWorkImagePath = (
   return work.thumbnail
 }
 
+/**
+ * 帯状に大量に並べる用途の軽量サムネ。
+ * 同梱画像なら `works/sm/<file>`（480×270）を、リモート配信なら元URL（og.jpg=800×450）を返す。
+ */
+export const getWorkThumbPath = (work: WorkImageSource): string => {
+  const src = work.thumbnail
+  if (/^https?:\/\//.test(src)) return src
+  return src.replace(/\/works\/([^/]+)$/, '/works/sm/$1')
+}
+
 export const formatTags = (tags: string[], limit = 3): string[] =>
   tags.filter(isNonEmptyString).slice(0, limit)
 

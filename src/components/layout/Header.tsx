@@ -15,11 +15,11 @@ export function Header({ onOpenContactForm }: HeaderProps) {
       <div className="site-header__inner">
         <div className="site-header__left">
           {isDetailPage && (
-            <Link to="/works-finder/" className="site-header__back">
+            <Link to="/works-finder/" className="site-header__back" aria-label="一覧に戻る">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              一覧に戻る
+              <span className="site-header__back-label">一覧に戻る</span>
             </Link>
           )}
           <Link to="/works-finder/" className="site-header__logo-link">
@@ -55,7 +55,8 @@ export function Header({ onOpenContactForm }: HeaderProps) {
             className="primary-button site-header__cta"
             onClick={onOpenContactForm}
           >
-            制作について相談する
+            <span className="site-header__cta-full">制作について相談する</span>
+            <span className="site-header__cta-short">相談する</span>
           </button>
         </div>
       </div>

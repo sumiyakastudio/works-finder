@@ -2,13 +2,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-import { Sidebar } from '../components/layout/Sidebar'
-import { Toolbar } from '../components/toolbar/Toolbar'
-import type { ViewMode } from '../components/toolbar/Toolbar'
+import { HeroSection } from '../components/sections/HeroSection'
+import { CtaBand } from '../components/sections/CtaBand'
+import { PitchSection } from '../components/sections/PitchSection'
+import { StatsSection } from '../components/sections/StatsSection'
+import { CapabilitiesSection } from '../components/sections/CapabilitiesSection'
+import { ProcessFaqSection } from '../components/sections/ProcessFaqSection'
+import { FilterBar, BAR_GROUP_KEYS } from '../components/filters/FilterBar'
+import { FilterSheet } from '../components/filters/FilterSheet'
+import type { ViewMode } from '../types/filter'
 import { CompareBar } from '../components/compare/CompareBar'
 import { ComparePanel } from '../components/compare/ComparePanel'
 
-import { works } from '../data/works'
+import { works as bundledWorks } from '../data/works'
+import { ensureRemoteWorks, useWorks } from '../lib/worksSource'
 import type { Work } from '../types/work'
 import type {
   ExploreSerializableState,
@@ -55,7 +62,7 @@ import { getWorkNavigationConfig } from '../lib/detail'
 type ExploreInitSource = 'url' | 'storage' | 'default'
 
 const parseExploreStateFromSearch = (search: string): ExploreSerializableState =>
-  sanitizeExploreStateForWorks(parseExploreState(search), works)
+  sanitizeExploreStateForWorks(parseExploreState(search), bundledWorks)
 
 const resolveInitialExploreState = (): {
   state: ExploreSerializableState
@@ -73,10 +80,20 @@ const resolveInitialExploreState = (): {
   }
   const stored = readStoredExploreState()
   if (stored !== null) {
-    return { state: sanitizeExploreStateForWorks(stored, works), source: 'storage' }
+    return { state: sanitizeExploreStateForWorks(stored, bundledWorks), source: 'storage' }
   }
   return { state: getDefaultExploreState(), source: 'default' }
 }
+
+const createEmptyFilterState = (): FilterState => ({
+  selectedCaseTypes: [],
+  selectedGenres: [],
+  selectedSiteTypes: [],
+  selectedPurposes: [],
+  selectedFeatures: [],
+  selectedBudgetRanges: [],
+  selectedTechTags: [],
+})
 
 // ---------------------------------------------------------------------------
 // View mode persistence
@@ -90,15 +107,19 @@ function getInitialViewMode(): ViewMode {
 }
 
 // ---------------------------------------------------------------------------
-// Card stagger animation variants
+// Card stagger — アンカーのモーション人格（速い・小さい・ease-out-quart）
 // ---------------------------------------------------------------------------
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.05, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] as const },
+    transition: {
+      delay: Math.min(i, 11) * 0.04,
+      duration: 0.5,
+      ease: [0.165, 0.84, 0.44, 1] as const,
+    },
   }),
 }
 
@@ -106,8 +127,13 @@ const cardVariants = {
 // ListPage
 // ---------------------------------------------------------------------------
 
-export function ListPage() {
+export function ListPage({ onOpenContactForm }: { onOpenContactForm: () => void }) {
   const navigate = useNavigate()
+  // ポートフォリオ本体の最新データ（取得できなければ同梱データのまま）
+  const works = useWorks()
+  useEffect(() => {
+    void ensureRemoteWorks()
+  }, [])
   const [initialResolvedState] = useState(resolveInitialExploreState)
   const skipInitialStorageWriteRef = useRef(initialResolvedState.source === 'url')
 
@@ -123,13 +149,16 @@ export function ListPage() {
   }))
   const [sortOrder, setSortOrder] = useState<SortOrder>(initialResolvedState.state.sortOrder)
   const [viewMode, setViewMode] = useState<ViewMode>(getInitialViewMode)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [isCompareMode, setIsCompareMode] = useState(false)
 
   // Compare state
   const [compareSlugs, setCompareSlugs] = useState<CompareSelection>([])
   const [isComparePanelOpen, setIsComparePanelOpen] = useState(false)
-  const compareWorks = useMemo(() => getSelectedCompareWorks(compareSlugs, works), [compareSlugs])
+  const compareWorks = useMemo(
+    () => getSelectedCompareWorks(compareSlugs, works),
+    [compareSlugs, works],
+  )
 
   // Derived explore state
   const serializableExploreState = useMemo(
@@ -138,22 +167,46 @@ export function ListPage() {
   )
   const visibleWorks = useMemo(
     () => getVisibleWorks(works, serializableExploreState),
-    [serializableExploreState],
+    [serializableExploreState, works],
   )
   const serializedSearch = useMemo(
     () => serializeExploreState(serializableExploreState),
     [serializableExploreState],
   )
-  const filterGroups = useMemo(() => getFilterOptions(works), [])
+  const filterGroups = useMemo(() => getFilterOptions(works), [works])
   const emptyStateContent = useMemo(
     () => getExploreEmptyStateContent(serializableExploreState, works.length),
-    [serializableExploreState],
+    [serializableExploreState, works],
   )
+
+  const heroStats = useMemo(() => {
+    const uniqueOf = (pick: (work: Work) => string) =>
+      new Set(works.map(pick).filter((value) => value.length > 0)).size
+    return [
+      { value: works.length, label: '公開中の制作実績' },
+      { value: uniqueOf((work) => work.genre), label: '業種ジャンル' },
+      { value: uniqueOf((work) => work.siteType), label: 'サイト種別' },
+      {
+        value: works.reduce((sum, work) => sum + (work.pageCount ?? 0), 0),
+        label: '制作ページ総数',
+      },
+    ]
+  }, [works])
 
   // View mode persistence
   useEffect(() => {
     localStorage.setItem(VIEW_MODE_KEY, viewMode)
   }, [viewMode])
+
+  // SP シート表示中は背面スクロールを止める
+  useEffect(() => {
+    if (!isSheetOpen) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previous
+    }
+  }, [isSheetOpen])
 
   // URL sync
   useEffect(() => {
@@ -207,7 +260,6 @@ export function ListPage() {
   }
   const handleClearFilters = () => {
     const cleared = clearExploreFilters(serializableExploreState)
-    setQuery(cleared.query)
     setSelectedFilters({
       selectedCaseTypes: cleared.selectedCaseTypes,
       selectedGenres: cleared.selectedGenres,
@@ -217,6 +269,10 @@ export function ListPage() {
       selectedBudgetRanges: cleared.selectedBudgetRanges,
       selectedTechTags: cleared.selectedTechTags,
     })
+  }
+  const handleClearAll = () => {
+    handleClearFilters()
+    setQuery(clearExploreQuery(serializableExploreState).query)
   }
   const handleSortChange = (next: SortOrder) => setSortOrder(next)
 
@@ -239,80 +295,178 @@ export function ListPage() {
     navigate(`/works-finder/${slug}`)
   }
 
-  const appliedFilterCount = Object.values(selectedFilters).reduce((sum, arr) => sum + arr.length, 0)
+  const scrollToFinder = () => {
+    document.getElementById('finder')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  /** 「つくるもの」から該当のサイト種別だけに絞り込む */
+  const handleApplySiteType = (siteType: string) => {
+    setQuery('')
+    setSelectedFilters((prev) => ({ ...prev, selectedSiteTypes: [siteType] }))
+    scrollToFinder()
+  }
+  /** グラフの棒からジャンルで絞り込む */
+  const handleApplyGenre = (genre: string) => {
+    setQuery('')
+    setSelectedFilters((prev) => ({ ...prev, selectedGenres: [genre] }))
+    scrollToFinder()
+  }
+  /** 「機能」「技術」からキーワード検索する */
+  const handleApplyQuery = (keyword: string) => {
+    setSelectedFilters(createEmptyFilterState)
+    setQuery(keyword)
+    scrollToFinder()
+  }
+
+  const appliedFilterCount = BAR_GROUP_KEYS.reduce(
+    (sum, key) => sum + selectedFilters[key].length,
+    0,
+  )
+  const appliedChips = BAR_GROUP_KEYS.flatMap((key) =>
+    selectedFilters[key].map((value) => ({ key, value })),
+  )
+  const hasAnyCondition = appliedChips.length > 0 || query.trim().length > 0
 
   return (
     <>
-      <div className="list-layout">
-        <Sidebar
-          filterGroups={filterGroups}
-          selectedFilters={selectedFilters}
-          appliedFilterCount={appliedFilterCount}
-          visibleCount={visibleWorks.length}
-          isOpen={isSidebarOpen}
-          onFilterToggle={handleToggleFilter}
-          onClearFilters={handleClearFilters}
-          onClose={() => setIsSidebarOpen(false)}
-        />
+      <HeroSection stats={heroStats} works={works} onOpenContactForm={onOpenContactForm} />
 
-        <main className="list-main">
-          <Toolbar
+      <div className="finder" id="finder">
+        <div className="finder__bar-wrap">
+          <FilterBar
+            filterGroups={filterGroups}
+            selectedFilters={selectedFilters}
             query={query}
-            visibleCount={visibleWorks.length}
-            viewMode={viewMode}
             sortOrder={sortOrder}
+            viewMode={viewMode}
             isCompareMode={isCompareMode}
+            appliedFilterCount={appliedFilterCount}
+            onFilterToggle={handleToggleFilter}
             onQueryChange={handleSearchChange}
-            onViewModeChange={setViewMode}
             onSortChange={handleSortChange}
-            onToggleCompareMode={() => setIsCompareMode((p) => !p)}
-            onOpenSidebar={() => setIsSidebarOpen(true)}
+            onViewModeChange={setViewMode}
+            onToggleCompareMode={() => setIsCompareMode((prev) => !prev)}
+            onOpenSheet={() => setIsSheetOpen(true)}
           />
 
-          {visibleWorks.length === 0 ? (
-            <div className="empty-state">
-              <p className="empty-state__title">
-                {emptyStateContent?.title ?? '条件に合う作品がありません'}
-              </p>
-              <p className="empty-state__desc">
-                {emptyStateContent?.description ?? '条件を緩めてお試しください'}
-              </p>
-              {emptyStateContent && (
-                <button
-                  type="button"
-                  className="empty-state__btn"
-                  onClick={() => {
-                    if (emptyStateContent.actionKind === 'clear-search') {
-                      const cleared = clearExploreQuery(serializableExploreState)
-                      setQuery(cleared.query)
-                    } else {
-                      handleClearFilters()
-                    }
-                  }}
-                >
-                  {emptyStateContent.actionLabel}
-                </button>
+          {hasAnyCondition && (
+            <div className="finder__applied">
+              {query.trim().length > 0 && (
+                <span className="applied-chip">
+                  「{query}」
+                  <button
+                    type="button"
+                    className="applied-chip__x"
+                    aria-label="キーワードを解除"
+                    onClick={() => setQuery('')}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </span>
               )}
-            </div>
-          ) : (
-            <div className={`works-view works-view--${viewMode}`}>
-              {visibleWorks.map((work, i) => (
-                <WorkCardItem
-                  key={work.slug}
-                  work={work}
-                  index={i}
-                  viewMode={viewMode}
-                  isCompareMode={isCompareMode}
-                  isCompared={isWorkSelectedForCompare(compareSlugs, work.slug)}
-                  isCompareDisabled={isCompareAtLimit(compareSlugs)}
-                  onOpenDetail={() => handleOpenDetail(work.slug)}
-                  onToggleCompare={() => handleToggleCompare(work.slug)}
-                />
+              {appliedChips.map((chip) => (
+                <span className="applied-chip" key={`${chip.key}-${chip.value}`}>
+                  {chip.value}
+                  <button
+                    type="button"
+                    className="applied-chip__x"
+                    aria-label={`${chip.value} を解除`}
+                    onClick={() => handleToggleFilter(chip.key, chip.value)}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </span>
               ))}
+              <button type="button" className="applied-clear" onClick={handleClearAll}>
+                すべて解除
+              </button>
             </div>
           )}
-        </main>
+        </div>
+
+        <div className="finder__results-head">
+          <p className="finder__count" aria-live="polite">
+            <strong>{visibleWorks.length}</strong> 件
+            {visibleWorks.length !== works.length && ` / 全${works.length}件`}
+          </p>
+          <p className="finder__summary">
+            {hasAnyCondition ? '条件で絞り込み中' : 'すべての制作実績'}
+          </p>
+        </div>
+
+        {visibleWorks.length === 0 ? (
+          <div className="empty-state">
+            <p className="empty-state__title">
+              {emptyStateContent?.title ?? '条件に合う作品がありません'}
+            </p>
+            <p className="empty-state__desc">
+              {emptyStateContent?.description ?? '条件を緩めてお試しください'}
+            </p>
+            {emptyStateContent && (
+              <button
+                type="button"
+                className="empty-state__btn"
+                onClick={() => {
+                  if (emptyStateContent.actionKind === 'clear-search') {
+                    const cleared = clearExploreQuery(serializableExploreState)
+                    setQuery(cleared.query)
+                  } else {
+                    handleClearFilters()
+                  }
+                }}
+              >
+                {emptyStateContent.actionLabel}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className={`works-view works-view--${viewMode}`}>
+            {visibleWorks.map((work, i) => (
+              <WorkCardItem
+                key={work.slug}
+                work={work}
+                index={i}
+                viewMode={viewMode}
+                isCompareMode={isCompareMode}
+                isCompared={isWorkSelectedForCompare(compareSlugs, work.slug)}
+                isCompareDisabled={isCompareAtLimit(compareSlugs)}
+                onOpenDetail={() => handleOpenDetail(work.slug)}
+                onToggleCompare={() => handleToggleCompare(work.slug)}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      <PitchSection />
+
+      <StatsSection works={works} onApplyGenre={handleApplyGenre} />
+
+      <CapabilitiesSection
+        works={works}
+        onApplySiteType={handleApplySiteType}
+        onApplyQuery={handleApplyQuery}
+      />
+
+      <ProcessFaqSection onOpenContactForm={onOpenContactForm} />
+
+      <CtaBand onOpenContactForm={onOpenContactForm} />
+
+      {/* SP フィルタシート */}
+      {isSheetOpen && (
+        <FilterSheet
+          filterGroups={filterGroups}
+          selectedFilters={selectedFilters}
+          visibleCount={visibleWorks.length}
+          appliedFilterCount={appliedFilterCount}
+          onFilterToggle={handleToggleFilter}
+          onClearFilters={handleClearFilters}
+          onClose={() => setIsSheetOpen(false)}
+        />
+      )}
 
       {/* Compare bar & panel */}
       {shouldShowCompareBar(compareSlugs) && (
@@ -335,7 +489,7 @@ export function ListPage() {
 }
 
 // ---------------------------------------------------------------------------
-// Card item — renders differently based on viewMode
+// Card item — viewMode ごとに描き分ける
 // ---------------------------------------------------------------------------
 
 function WorkCardItem({
@@ -358,7 +512,8 @@ function WorkCardItem({
   onToggleCompare: () => void
 }) {
   const navConfig = getWorkNavigationConfig(work)
-  const imgSrc = work.fullPageScreenshot ?? getWorkImagePath(work)
+  // カードは FV ショット（16:9）を使う。フルページ画像は詳細側の役割。
+  const imgSrc = getWorkImagePath(work)
 
   if (viewMode === 'thumbnail') {
     return (
@@ -368,13 +523,18 @@ function WorkCardItem({
         initial="hidden"
         animate="visible"
         variants={cardVariants}
-        whileHover={{ scale: 1.03, boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
         onClick={onOpenDetail}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') onOpenDetail() }}
+        aria-label={`${work.title} の詳細を見る`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onOpenDetail()
+          }
+        }}
       >
-        <img src={imgSrc} alt={work.title} loading="lazy" className="thumb-card__img" />
+        <img src={imgSrc} alt={work.title} loading="lazy" decoding="async" className="thumb-card__img" />
         {isCompareMode && (
           <label className="thumb-card__compare" onClick={(e) => e.stopPropagation()}>
             <input
@@ -382,6 +542,7 @@ function WorkCardItem({
               checked={isCompared}
               disabled={isCompareDisabled && !isCompared}
               onChange={onToggleCompare}
+              aria-label={`${work.title} を比較に追加`}
             />
           </label>
         )}
@@ -397,22 +558,31 @@ function WorkCardItem({
         initial="hidden"
         animate="visible"
         variants={cardVariants}
-        whileHover={{ y: -2 }}
         onClick={onOpenDetail}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') onOpenDetail() }}
+        aria-label={`${work.title} の詳細を見る`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onOpenDetail()
+          }
+        }}
       >
         <div className="list-card__thumb">
-          <img src={imgSrc} alt={work.title} loading="lazy" />
+          <img src={imgSrc} alt={work.title} loading="lazy" decoding="async" />
         </div>
         <div className="list-card__body">
           <h3 className="list-card__title">{work.title}</h3>
-          <p className="list-card__meta">{work.genre} / {work.siteType}</p>
+          <p className="list-card__meta">
+            {work.genre} / {work.siteType} / {work.purpose}
+          </p>
           <p className="list-card__summary">{work.summary}</p>
           <div className="list-card__tags">
             {work.tags.slice(0, 4).map((tag) => (
-              <span key={tag} className="list-card__tag">{tag}</span>
+              <span key={tag} className="list-card__tag">
+                {tag}
+              </span>
             ))}
           </div>
         </div>
@@ -425,6 +595,7 @@ function WorkCardItem({
                 checked={isCompared}
                 disabled={isCompareDisabled && !isCompared}
                 onChange={onToggleCompare}
+                aria-label={`${work.title} を比較に追加`}
               />
               比較
             </label>
@@ -434,7 +605,7 @@ function WorkCardItem({
     )
   }
 
-  // Grid view (default) — ミニマル: サムネイル + タイトル、ホバーでクイックプレビュー
+  // グリッド（既定）— サムネ + タイトル + メタ + タグ（Awwwards のカードメタ設計）
   return (
     <motion.article
       className="grid-card"
@@ -442,32 +613,20 @@ function WorkCardItem({
       initial="hidden"
       animate="visible"
       variants={cardVariants}
-      whileHover={{
-        scale: 1.03,
-        rotateX: 1,
-        rotateY: -1,
-        boxShadow: '0 24px 48px rgba(0,0,0,0.35)',
-      }}
-      transition={{ duration: 0.3 }}
       onClick={onOpenDetail}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter') onOpenDetail() }}
+      aria-label={`${work.title} の詳細を見る`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onOpenDetail()
+        }
+      }}
     >
       <div className="grid-card__media">
-        <img src={imgSrc} alt={work.title} loading="lazy" className="grid-card__img" />
-        {/* ホバー時クイックプレビュー */}
-        <div className="grid-card__overlay">
-          <p className="grid-card__overlay-summary">{work.summary}</p>
-          <div className="grid-card__overlay-tags">
-            {work.tags.slice(0, 3).map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
-          </div>
-          {work.budgetRange && (
-            <span className="grid-card__overlay-price">{work.budgetRange}</span>
-          )}
-        </div>
+        <img src={imgSrc} alt={work.title} loading="lazy" decoding="async" className="grid-card__img" />
+        {navConfig.showCaseStudyBadge && <span className="grid-card__badge">Case Study</span>}
         {isCompareMode && (
           <label className="grid-card__compare" onClick={(e) => e.stopPropagation()}>
             <input
@@ -475,15 +634,36 @@ function WorkCardItem({
               checked={isCompared}
               disabled={isCompareDisabled && !isCompared}
               onChange={onToggleCompare}
+              aria-label={`${work.title} を比較に追加`}
             />
           </label>
         )}
-        {navConfig.showCaseStudyBadge && (
-          <span className="grid-card__badge">Case Study</span>
-        )}
       </div>
       <div className="grid-card__body">
-        <h3 className="grid-card__title">{work.title}</h3>
+        <div className="grid-card__head">
+          <h3 className="grid-card__title">{work.title}</h3>
+          <div className="grid-card__flags">
+            {work.isConcept ? (
+              <span className="pill">Concept</span>
+            ) : (
+              <span className="pill pill--accent">実案件</span>
+            )}
+          </div>
+        </div>
+        <p className="grid-card__meta">
+          {work.genre}
+          <span className="grid-card__meta-sep">/</span>
+          {work.siteType}
+          <span className="grid-card__meta-sep">/</span>
+          {work.pageCount != null ? `${work.pageCount}P` : '—'}
+        </p>
+        <div className="grid-card__tags">
+          {work.tags.slice(0, 3).map((tag) => (
+            <span key={tag} className="grid-card__tag">
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.article>
   )

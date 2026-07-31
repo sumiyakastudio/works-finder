@@ -1,89 +1,102 @@
-interface ArchiveStat {
-  label: string
-  value: string
-  supportingText: string
-}
+import { useCountUp } from '../../hooks/useReveal'
+import { getWorkImagePath, getWorkThumbPath } from '../../lib/works'
+import type { Work } from '../../types/work'
 
-interface TaxonomyPreview {
-  title: string
-  items: string[]
+interface HeroStat {
+  value: number
+  suffix?: string
+  label: string
 }
 
 interface HeroSectionProps {
-  stats: ArchiveStat[]
-  taxonomies: TaxonomyPreview[]
+  stats: HeroStat[]
+  works: Work[]
+  onOpenContactForm: () => void
 }
 
-export function HeroSection({
-  stats,
-  taxonomies,
-}: HeroSectionProps) {
-  const bgImages = [
-    'aoki-beauty-clinic-full.jpg',
-    'aoki-tech-studio-full.jpg',
-    'cafe-aoki-full.jpg',
-    'aoki-mitumori-full.jpg',
-    'aoki-animation-full.jpg',
-  ]
+function StatValue({ value }: { value: number }) {
+  const ref = useCountUp(value)
+  return (
+    <span className="hero__stat-num" ref={ref as React.RefObject<HTMLSpanElement>}>
+      0
+    </span>
+  )
+}
+
+/**
+ * 入口ヒーロー。
+ * 借用元 = Mobbin（巨大タイポ → そのままツール本体へ入る導線）。
+ * アンカー = Linear の構造（左寄せ・グレーのリード文・数値の列）へ翻訳している。
+ * 下端に実作品のサムネ帯を常時ゆっくり流す（CSSマーキー＝iOS でも安定する手法）。
+ */
+export function HeroSection({ stats, works, onOpenContactForm }: HeroSectionProps) {
+  // 途切れないよう2周分ならべる
+  const strip = works.length > 0 ? [...works, ...works] : []
 
   return (
-    <section className="hero-section" aria-labelledby="hero-title">
-      <div className="hero-bg" aria-hidden="true">
-        {bgImages.map((img, i) => (
-          <img
-            key={img}
-            className={`hero-bg__img hero-bg__img--${i + 1}`}
-            src={`${import.meta.env.BASE_URL}assets/images/works/${img}`}
-            alt=""
-            loading="eager"
-          />
-        ))}
+    <section className="hero">
+      <div className="hero__inner">
+        <p className="hero__kicker">AKASHIKI — Works Finder</p>
+
+        <h1 className="hero__title">
+          つくったものを、
+          <br />
+          条件から見つける。
+        </h1>
+
+        <p className="hero__lead">
+          {'業種・サイト種別・制作目的・使った技術。4つの軸で絞り込むと、依頼を考えている案件にいちばん近い制作実績だけが残ります。1枚のLPから18ページのブランドサイトまで、実際に公開しているものだけを並べています。'}
+        </p>
+
+        <div className="hero__actions">
+          <a className="primary-button" href="#finder">
+            実績を探す
+          </a>
+          <button type="button" className="ghost-button" onClick={onOpenContactForm}>
+            制作について相談する
+          </button>
+        </div>
+
+        <dl className="hero__stats">
+          {stats.map((stat) => (
+            <div className="hero__stat" key={stat.label}>
+              <dt className="sr-only">{stat.label}</dt>
+              <dd className="hero__stat-value">
+                <StatValue value={stat.value} />
+                {stat.suffix != null && <span className="hero__stat-suffix">{stat.suffix}</span>}
+              </dd>
+              <dd className="hero__stat-label">{stat.label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <div className="hero-section__overlay" />
-      <div className="hero-section__layout">
-        <div>
-          <h1 id="hero-title">
-            <span className="hero-title__main">Works</span>
-            {' '}
-            <span className="hero-title__accent">Finder</span>
-          </h1>
-          <p className="hero-section__lead">
-            制作実績から、ご依頼に近い事例を見つけられます。
-            <br />
-            検索・絞り込み・比較で、制作の方向性を具体的にイメージしてみてください。
-          </p>
 
-          <div className="hero-section__actions">
-            <a className="hero-link" href="#archive">
-              作品一覧を見る
-            </a>
-          </div>
-
-          <p className="hero-section__stats-inline">
-            {stats.map((stat, i) => (
-              <span key={stat.label}>
-                {i > 0 ? <span className="hero-section__stats-sep">/</span> : null}
-                <span className="hero-section__stats-num">{stat.value}</span>
-                {' '}
-                <span className="hero-section__stats-label">{stat.label}</span>
+      {strip.length > 0 && (
+        <div className="hero__strip" aria-hidden="true">
+          <div className="hero__strip-track">
+            {strip.map((work, i) => (
+              <span className="hero__strip-item" key={`${work.slug}-${i}`}>
+                <img
+                  src={getWorkThumbPath(work)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width={240}
+                  height={135}
+                  onError={(event) => {
+                    const img = event.currentTarget
+                    const fallback = getWorkImagePath(work)
+                    if (!img.src.endsWith(fallback)) {
+                      img.onerror = null
+                      img.src = fallback
+                    }
+                  }}
+                />
               </span>
             ))}
-          </p>
+          </div>
         </div>
-      </div>
-
-      <div className="taxonomy-grid">
-        {taxonomies.map((taxonomy) => (
-          <section className="taxonomy-card" key={taxonomy.title}>
-            <h3>{taxonomy.title}</h3>
-            <ul className="chip-list">
-              {taxonomy.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
+      )}
     </section>
   )
 }

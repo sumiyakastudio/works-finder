@@ -21,15 +21,24 @@ function App() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main">
+        本文へスキップ
+      </a>
+
       <Header onOpenContactForm={handleOpenContactForm} />
 
-      <AnimatePresence mode="wait">
-        <Routes>
-          <Route path="/works-finder/" element={<ListPage />} />
-          <Route path="/works-finder/:workId" element={<DetailPage />} />
-          <Route path="/" element={<ListPage />} />
-        </Routes>
-      </AnimatePresence>
+      <main id="main">
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route
+              path="/works-finder/"
+              element={<ListPage onOpenContactForm={handleOpenContactForm} />}
+            />
+            <Route path="/works-finder/:workId" element={<DetailPage />} />
+            <Route path="/" element={<ListPage onOpenContactForm={handleOpenContactForm} />} />
+          </Routes>
+        </AnimatePresence>
+      </main>
 
       <Footer />
 

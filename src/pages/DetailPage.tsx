@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { works } from '../data/works'
+import { ensureRemoteWorks, useWorks, useWorksSettled } from '../lib/worksSource'
+import type { Work } from '../types/work'
 import { getWorkImagePath, formatTags } from '../lib/works'
 import {
   getDetailMetaFacts,
@@ -34,6 +35,12 @@ export function DetailPage() {
   const [activeTab, setActiveTab] = useState<DetailTab>('overview')
   const [previewDevice, setPreviewDevice] = useState<'pc' | 'sp'>('pc')
 
+  const works = useWorks()
+  const worksSettled = useWorksSettled()
+  useEffect(() => {
+    void ensureRemoteWorks()
+  }, [])
+
   const workIndex = works.findIndex((w) => w.slug === workId)
   const work = workIndex >= 0 ? works[workIndex] : null
   const prevWork = workIndex > 0 ? works[workIndex - 1] : null
@@ -46,6 +53,14 @@ export function DetailPage() {
   }, [navigate])
 
   if (!work) {
+    // ポートフォリオ側の最新データを取得中はまだ判断できない
+    if (!worksSettled) {
+      return (
+        <div className="detail-not-found">
+          <p className="overview__shot-note">読み込んでいます…</p>
+        </div>
+      )
+    }
     return (
       <div className="detail-not-found">
         <h2>作品が見つかりません</h2>
@@ -168,7 +183,7 @@ function OverviewTab({
   navConfig,
   showDesign,
 }: {
-  work: (typeof works)[number]
+  work: Work
   metaFacts: MetaFact[]
   designFacts: MetaFact[]
   chipGroups: ChipGroup[]
@@ -176,12 +191,33 @@ function OverviewTab({
   navConfig: ReturnType<typeof getWorkNavigationConfig>
   showDesign: boolean
 }) {
-  const imgSrc = work.fullPageScreenshot ?? getWorkImagePath(work)
+  const imgSrc = getWorkImagePath(work)
 
   return (
     <div className="overview">
-      <div className="overview__hero">
-        <img src={imgSrc} alt={work.title} className="overview__image" />
+      <div className="overview__visual">
+        <div className="overview__hero">
+          <img src={imgSrc} alt={`${work.title} のファーストビュー`} className="overview__image" />
+        </div>
+        {work.fullPageScreenshot != null && (
+          <>
+            <div className="overview__fullpage">
+              <img
+                src={work.fullPageScreenshot}
+                alt={`${work.title} のページ全体`}
+                className="overview__image"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <p className="overview__shot-note">
+              {'上＝ファーストビュー／下＝ページ全体（枠内をスクロールできます）。実際の動きは「プレビュー」タブから確認できます。'}
+            </p>
+          </>
+        )}
+      </div>
+
+      <div className="overview__info">
         <div className="overview__hero-info">
           <div className="overview__pills">
             {work.isConcept ? (
@@ -189,48 +225,36 @@ function OverviewTab({
             ) : (
               <span className="pill pill--accent">実案件</span>
             )}
-            {work.isFeatured && <span className="pill pill--accent">Featured</span>}
+            {work.isFeatured && <span className="pill">Featured</span>}
             {navConfig.hasCaseStudy && <span className="pill pill--success">Case Study</span>}
           </div>
           <h1 className="overview__title">{work.title}</h1>
-          <p className="overview__kicker">{work.genre} / {work.siteType}</p>
+          <p className="overview__kicker">
+            {work.genre} / {work.siteType} / {work.purpose}
+          </p>
         </div>
-      </div>
 
-      <div className="overview__tags">
-        {tagItems.map((tag) => (
-          <span key={tag} className="overview__tag">{tag}</span>
-        ))}
-      </div>
-
-      <section className="overview__section">
-        <h3>コンセプト</h3>
-        <p>{work.summary}</p>
-        {hasDetailChallenge(work) && (
-          <div className="overview__challenge">
-            <strong>背景・課題</strong>
-            <p>{work.challenge}</p>
-          </div>
-        )}
-      </section>
-
-      <section className="overview__section">
-        <h3>メタ情報</h3>
-        <dl className="overview__facts">
-          {metaFacts.map((f) => (
-            <div key={f.label} className="overview__fact">
-              <dt>{f.label}</dt>
-              <dd>{f.value}</dd>
-            </div>
+        <div className="overview__tags">
+          {tagItems.map((tag) => (
+            <span key={tag} className="overview__tag">{tag}</span>
           ))}
-        </dl>
-      </section>
+        </div>
 
-      {showDesign && designFacts.length > 0 && (
         <section className="overview__section">
-          <h3>設計観点</h3>
+          <h3>コンセプト</h3>
+          <p>{work.summary}</p>
+          {hasDetailChallenge(work) && (
+            <div className="overview__challenge">
+              <strong>背景・課題</strong>
+              <p>{work.challenge}</p>
+            </div>
+          )}
+        </section>
+
+        <section className="overview__section">
+          <h3>メタ情報</h3>
           <dl className="overview__facts">
-            {designFacts.map((f) => (
+            {metaFacts.map((f) => (
               <div key={f.label} className="overview__fact">
                 <dt>{f.label}</dt>
                 <dd>{f.value}</dd>
@@ -238,35 +262,49 @@ function OverviewTab({
             ))}
           </dl>
         </section>
-      )}
 
-      <section className="overview__section">
-        <h3>技術タグ</h3>
-        <div className="overview__chips">
-          {chipGroups.map((group) => (
-            <div key={group.label} className="overview__chip-group">
-              <span className="overview__chip-label">{group.label}</span>
-              <div className="overview__chip-items">
-                {group.items.map((item) => (
-                  <span key={item} className="chip">{item}</span>
-                ))}
+        {showDesign && designFacts.length > 0 && (
+          <section className="overview__section">
+            <h3>設計観点</h3>
+            <dl className="overview__facts">
+              {designFacts.map((f) => (
+                <div key={f.label} className="overview__fact">
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        <section className="overview__section">
+          <h3>技術タグ</h3>
+          <div className="overview__chips">
+            {chipGroups.map((group) => (
+              <div key={group.label} className="overview__chip-group">
+                <span className="overview__chip-label">{group.label}</span>
+                <div className="overview__chip-items">
+                  {group.items.map((item) => (
+                    <span key={item} className="chip">{item}</span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
 
-      <div className="overview__actions">
-        {navConfig.siteLink && (
-          <a href={navConfig.siteLink.href} target={navConfig.siteLink.target} rel={navConfig.siteLink.rel} className="primary-button">
-            実サイトを見る
-          </a>
-        )}
-        {navConfig.caseStudyLink && (
-          <a href={navConfig.caseStudyLink.href} target={navConfig.caseStudyLink.target} rel={navConfig.caseStudyLink.rel} className="ghost-button">
-            ケーススタディ
-          </a>
-        )}
+        <div className="overview__actions">
+          {navConfig.siteLink && (
+            <a href={navConfig.siteLink.href} target={navConfig.siteLink.target} rel={navConfig.siteLink.rel} className="primary-button">
+              実サイトを見る
+            </a>
+          )}
+          {navConfig.caseStudyLink && (
+            <a href={navConfig.caseStudyLink.href} target={navConfig.caseStudyLink.target} rel={navConfig.caseStudyLink.rel} className="ghost-button">
+              ケーススタディ
+            </a>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -281,7 +319,7 @@ function PreviewTab({
   previewDevice,
   onDeviceChange,
 }: {
-  work: (typeof works)[number]
+  work: Work
   previewDevice: 'pc' | 'sp'
   onDeviceChange: (d: 'pc' | 'sp') => void
 }) {
@@ -350,7 +388,7 @@ function TechTab({
   work,
   booleanFlags,
 }: {
-  work: (typeof works)[number]
+  work: Work
   booleanFlags: MetaFact[]
 }) {
   return (

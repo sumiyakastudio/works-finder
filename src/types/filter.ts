@@ -193,3 +193,6 @@ export interface ExploreStatusContext {
   visibleCount: number
   totalCount?: number
 }
+
+/** 作品一覧の表示モード */
+export type ViewMode = 'grid' | 'list' | 'thumbnail'

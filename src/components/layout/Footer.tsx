@@ -6,7 +6,7 @@ export function Footer() {
       <div className="site-footer__inner">
         <div className="site-footer__top">
           <div className="site-footer__brand">
-            <a href="#" className="site-footer__logo-link">
+            <a href={import.meta.env.BASE_URL} className="site-footer__logo-link">
               <img
                 src={`${import.meta.env.BASE_URL}assets/images/meta/logo-white.png`}
                 alt="AKASHIKI"
@@ -18,8 +18,17 @@ export function Footer() {
           </div>
 
           <nav className="site-footer__nav" aria-label="フッターナビゲーション">
-            <a href="#archive">制作実績</a>
+            <a href="#finder">制作実績を探す</a>
+            <a href="#capabilities">できること</a>
+            <a href="#process">相談から公開まで</a>
             <a href="#contact">お問い合わせ</a>
+            <a
+              href="https://sumiyaka-portfolio.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ポートフォリオ
+            </a>
           </nav>
 
           <div className="site-footer__social">
