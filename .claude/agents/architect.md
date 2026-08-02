@@ -22,7 +22,7 @@ AppState型、Action型（useReducerのアクション）も含む。
 
 注意:
 - `Work.features` は `string[]`
-- `Work.isConcept`, `Work.isFeatured`, `Work.hasCms`, `Work.hasAnimation`, `Work.hasForm` は `boolean`
+- `Work.isFeatured`, `Work.hasCms`, `Work.hasAnimation`, `Work.hasForm` は `boolean`（※`isConcept`は2026-08-02に廃止＝再追加しないこと）
 - `Work.detailUrl` は `string | null`
 - `Work.thumbnail`, `Work.thumbnailFallback` は `string`
 - `Work.year` は `number`

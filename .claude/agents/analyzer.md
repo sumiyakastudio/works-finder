@@ -27,7 +27,7 @@ model: sonnet
 - 6軸フィルターの定義（`filterDefinitions` 配列）
 - 各フィルターの `getValues` 関数の特殊処理
   - `selectedFeatures`: `hasCms`, `hasAnimation`, `hasForm` からの暗黙的追加
-  - `selectedCaseTypes`: `isConcept` フラグからの導出
+  - ※`selectedCaseTypes`（案件区分）は2026-08-02に廃止。復活させないこと
 - `optionOrders` による表示順制御
 - 検索インデックス構築ロジック（`searchableFields` + NFKC正規化）
 - 3種ソートの比較ロジック

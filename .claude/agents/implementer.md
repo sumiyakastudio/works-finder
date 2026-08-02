@@ -125,7 +125,7 @@ CLAUDE.mdの品質基準と実装順序に厳密に従うこと。
 ### Phase 6: セクションコンポーネント
 
 **6-1. `src/components/hero/Hero.tsx`**
-- ヘッダー + 統計カード（掲載案件数 / 実案件数 / 絞り込み軸数）
+- ヘッダー + 統計カード（掲載案件数 / 絞り込み軸数）※「実案件数」は2026-08-02に廃止
 
 **6-2. `src/components/search/SearchPanel.tsx`**
 - 検索フォーム + PopularTags を包含

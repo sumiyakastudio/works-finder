@@ -43,7 +43,7 @@ CLAUDE.mdに定義された「目標ディレクトリ構成」と実際のフ�
 2. **キーワード検索**: NFKC正規化（`.normalize("NFKC")`）が実装されているか。
    `searchableFields` 全9フィールドが含まれているか。
 3. **3種ソート**: recommended/newest/budget-asc の3種の比較ロジックが正確か。
-   recommendedの `isFeatured` → `isConcept` → `year` → `title` の4段ソートが再現されているか。
+   recommendedの `isFeatured` → `year` → `title` の3段ソートが再現されているか（`isConcept`段は2026-08-02に廃止）。
 4. **比較機能**: compareIdsの上限3件制約が実装されているか。
    `comparisonRows` の7行が全て定義されているか。
 5. **詳細モーダル**: 全フィールド（概要・背景・制作条件・実装情報）が表示されているか。
