@@ -38,7 +38,6 @@ export interface Work {
   hasCms?: boolean
   hasAnimation?: boolean
   hasForm?: boolean
-  isConcept?: boolean
 
   // ---------------------------------------------------------------------------
   // 補助導線 — ケーススタディ / 詳細ページ

@@ -36,7 +36,6 @@ interface RemoteWork {
   hasCms: boolean
   hasAnimation: boolean
   hasForm: boolean
-  isConcept: boolean
   siteUrl: string | null
   detailUrl: string | null
 }
@@ -89,7 +88,6 @@ const toWork = (raw: unknown): Work | null => {
     hasCms: item.hasCms === true,
     hasAnimation: item.hasAnimation === true,
     hasForm: item.hasForm === true,
-    isConcept: item.isConcept === true,
     detailUrl: item.detailUrl ?? null,
     siteUrl: item.siteUrl ?? null,
   }

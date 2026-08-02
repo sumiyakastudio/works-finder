@@ -30,7 +30,6 @@ export const SORT_OPTIONS: readonly SortOption[] = [
 ] as const
 
 export interface FilterState {
-  selectedCaseTypes: string[]
   selectedGenres: string[]
   selectedSiteTypes: string[]
   selectedPurposes: string[]
@@ -67,7 +66,6 @@ export interface SortState {
  *
  * 含まれるフィールド（全 6 件）:
  *   query            — 検索キーワード
- *   selectedCaseTypes — 案件区分絞り込み
  *   selectedGenres   — ジャンル絞り込み
  *   selectedSiteTypes — サイト種別絞り込み
  *   selectedPurposes — 目的絞り込み
@@ -86,7 +84,6 @@ export type ExploreSerializableKey = keyof ExploreSerializableState
 /** ExploreSerializableState の全キーを列挙した定数。ランタイム検証に使用できる。 */
 export const EXPLORE_SERIALIZABLE_KEYS: readonly ExploreSerializableKey[] = [
   'query',
-  'selectedCaseTypes',
   'selectedGenres',
   'selectedSiteTypes',
   'selectedPurposes',

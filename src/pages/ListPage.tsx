@@ -86,7 +86,6 @@ const resolveInitialExploreState = (): {
 }
 
 const createEmptyFilterState = (): FilterState => ({
-  selectedCaseTypes: [],
   selectedGenres: [],
   selectedSiteTypes: [],
   selectedPurposes: [],
@@ -139,7 +138,6 @@ export function ListPage({ onOpenContactForm }: { onOpenContactForm: () => void 
 
   const [query, setQuery] = useState(initialResolvedState.state.query)
   const [selectedFilters, setSelectedFilters] = useState<FilterState>(() => ({
-    selectedCaseTypes: initialResolvedState.state.selectedCaseTypes,
     selectedGenres: initialResolvedState.state.selectedGenres,
     selectedSiteTypes: initialResolvedState.state.selectedSiteTypes,
     selectedPurposes: initialResolvedState.state.selectedPurposes,
@@ -236,7 +234,6 @@ export function ListPage({ onOpenContactForm }: { onOpenContactForm: () => void 
       const next = parseExploreStateFromSearch(window.location.search)
       setQuery(next.query)
       setSelectedFilters({
-        selectedCaseTypes: next.selectedCaseTypes,
         selectedGenres: next.selectedGenres,
         selectedSiteTypes: next.selectedSiteTypes,
         selectedPurposes: next.selectedPurposes,
@@ -261,7 +258,6 @@ export function ListPage({ onOpenContactForm }: { onOpenContactForm: () => void 
   const handleClearFilters = () => {
     const cleared = clearExploreFilters(serializableExploreState)
     setSelectedFilters({
-      selectedCaseTypes: cleared.selectedCaseTypes,
       selectedGenres: cleared.selectedGenres,
       selectedSiteTypes: cleared.selectedSiteTypes,
       selectedPurposes: cleared.selectedPurposes,
@@ -642,13 +638,6 @@ function WorkCardItem({
       <div className="grid-card__body">
         <div className="grid-card__head">
           <h3 className="grid-card__title">{work.title}</h3>
-          <div className="grid-card__flags">
-            {work.isConcept ? (
-              <span className="pill">Concept</span>
-            ) : (
-              <span className="pill pill--accent">実案件</span>
-            )}
-          </div>
         </div>
         <p className="grid-card__meta">
           {work.genre}

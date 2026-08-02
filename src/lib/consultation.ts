@@ -162,7 +162,6 @@ export const getConsultationContent = (
   const draft = buildConsultationSummary(payload)
   const primaryHref = buildConsultationUrl(payload)
   const totalWorksCount = works.length
-  const realWorksCount = works.filter((w) => !w.isConcept).length
 
   let eyebrow = '閲覧メモ'
   let title = '気になった点を残しておく'
@@ -172,7 +171,7 @@ export const getConsultationContent = (
   let primaryLabel = 'メモを残す'
   let secondaryLabel = '一覧へ戻る'
   let secondaryHref = compareSlugs.length ? '#compare-bar' : '#results-heading'
-  let contextItems = [`全 ${totalWorksCount} 件`, `実案件 ${realWorksCount} 件`, '比較は最大3件']
+  let contextItems = [`全 ${totalWorksCount} 件`, '比較は最大3件']
 
   if (payload.activeWork) {
     eyebrow = '事例メモ'

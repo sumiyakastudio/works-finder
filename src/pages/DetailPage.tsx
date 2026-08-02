@@ -219,15 +219,12 @@ function OverviewTab({
 
       <div className="overview__info">
         <div className="overview__hero-info">
-          <div className="overview__pills">
-            {work.isConcept ? (
-              <span className="pill">Concept</span>
-            ) : (
-              <span className="pill pill--accent">実案件</span>
-            )}
-            {work.isFeatured && <span className="pill">Featured</span>}
-            {navConfig.hasCaseStudy && <span className="pill pill--success">Case Study</span>}
-          </div>
+          {(work.isFeatured === true || navConfig.hasCaseStudy) && (
+            <div className="overview__pills">
+              {work.isFeatured && <span className="pill">Featured</span>}
+              {navConfig.hasCaseStudy && <span className="pill pill--success">Case Study</span>}
+            </div>
+          )}
           <h1 className="overview__title">{work.title}</h1>
           <p className="overview__kicker">
             {work.genre} / {work.siteType} / {work.purpose}

@@ -52,7 +52,6 @@ export function StatsSection({ works, onApplyGenre }: StatsSectionProps) {
 
   const breakdown = useMemo(
     () => [
-      { label: '実案件（コンセプト以外）', count: works.filter((w) => w.isConcept !== true).length },
       { label: 'アニメーションあり', count: works.filter((w) => w.hasAnimation === true).length },
       { label: 'フォームあり', count: works.filter((w) => w.hasForm === true).length },
       { label: 'マルチページ（2P以上）', count: works.filter((w) => (w.pageCount ?? 0) >= 2).length },

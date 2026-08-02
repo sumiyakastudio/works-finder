@@ -66,7 +66,6 @@ export const works: Work[] = [
     designTone: 'クリーン / ライトラグジュアリー',
     detailUrl: './projects/aoki-beauty-clinic/',
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-BeautyClinic/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -100,7 +99,6 @@ export const works: Work[] = [
     designTone: 'シネマティック / ラグジュアリー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/lp-aoki-standard/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -134,7 +132,6 @@ export const works: Work[] = [
     designTone: 'シャープ / テック',
     detailUrl: './projects/aoki-tech-studio/',
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-Tech-Studio/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -168,7 +165,6 @@ export const works: Work[] = [
     designTone: 'ダーク / クラシック',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/cafe-aoki/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -202,7 +198,6 @@ export const works: Work[] = [
     designTone: 'ダーク / プロダクト',
     detailUrl: './projects/aoki-estimate-simulator/',
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-Mitumori/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -236,7 +231,6 @@ export const works: Work[] = [
     designTone: 'プレミアム / コンバージョン',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/aoki-lotion-lp/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -270,7 +264,6 @@ export const works: Work[] = [
     designTone: 'ラグジュアリー / エレガント',
     detailUrl: null,
     siteUrl: 'https://github.com/sumiyakastudio/aokicosmetic-wp',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -304,7 +297,6 @@ export const works: Work[] = [
     designTone: 'ウォーム / フレンドリー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/aoki-family-english/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -338,7 +330,6 @@ export const works: Work[] = [
     designTone: 'クリエイティブ / ファンタジック',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-Animation/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -372,7 +363,6 @@ export const works: Work[] = [
     designTone: 'モダンナチュラル / アースカラー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/AokiEstate/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -406,7 +396,6 @@ export const works: Work[] = [
     designTone: 'ダーク / エレガント',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/BistroAoki/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -440,7 +429,6 @@ export const works: Work[] = [
     designTone: 'ダーク / パワフル',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/AokiGym/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -474,7 +462,6 @@ export const works: Work[] = [
     designTone: 'フォーマル / エレガント',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/AokiTax/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -508,7 +495,6 @@ export const works: Work[] = [
     designTone: 'ダーク / ラグジュアリー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-BeautyClinic-No2/ja/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -542,7 +528,6 @@ export const works: Work[] = [
     designTone: 'ウォーム / ナチュラル',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-Reform/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -576,7 +561,6 @@ export const works: Work[] = [
     designTone: 'ヴィンテージ / エディトリアル',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/caldwell-sons/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -610,7 +594,6 @@ export const works: Work[] = [
     designTone: 'ダークミニマル / ラグジュアリー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/Aoki-Atelier/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -660,7 +643,6 @@ export const works: Work[] = [
     designTone: 'ミニマル / エディトリアル・ラグジュアリー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/suigen-lotion/',
-    isConcept: true,
   },
 
   // -------------------------------------------------------------------------
@@ -707,7 +689,6 @@ export const works: Work[] = [
     designTone: 'ボールド / ヴィンテージ・モダン',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/regent-beverage/',
-    isConcept: true,
   },
 
   // -------------------------------------------------------------------------
@@ -755,7 +736,6 @@ export const works: Work[] = [
     designTone: 'クリーン / マリンブルー',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/reclear/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -804,7 +784,6 @@ export const works: Work[] = [
     designTone: 'ミニマル / プレミアム（無彩色）',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/hidamari-dental/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -852,7 +831,6 @@ export const works: Work[] = [
     designTone: 'ポップ / カラフル',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/morinoko-kindergarten/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -898,7 +876,6 @@ export const works: Work[] = [
     designTone: 'ポップ / ピクセルアート',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/codequest/',
-    isConcept: false,
   },
 
   // -------------------------------------------------------------------------
@@ -947,6 +924,5 @@ export const works: Work[] = [
     designTone: 'ダーク / プロダクト',
     detailUrl: null,
     siteUrl: 'https://sumiyakastudio.github.io/works-finder/',
-    isConcept: false,
   },
 ]

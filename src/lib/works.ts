@@ -29,7 +29,6 @@ const compareStrings = (left: string, right: string): number =>
   left.localeCompare(right, 'ja', { numeric: true, sensitivity: 'base' })
 
 const FILTER_GROUP_LABELS: Record<FilterGroupKey, string> = {
-  selectedCaseTypes: '案件区分',
   selectedGenres: 'ジャンル',
   selectedSiteTypes: 'サイト種別',
   selectedPurposes: '制作目的',
@@ -45,7 +44,6 @@ const sortFilterOptions = (
 
 const EXPLORE_PARAM_KEYS = {
   query: 'q',
-  caseTypes: 'case',
   genres: 'genre',
   siteTypes: 'siteType',
   purposes: 'purpose',
@@ -68,14 +66,9 @@ const getWorkFeatureValues = (work: Work): string[] => {
   return [...new Set(featureValues)]
 }
 
-/** Vanilla版と同じ: isConcept から案件区分を導出する */
-const getWorkCaseTypeValues = (work: Work): string[] =>
-  [work.isConcept ? 'コンセプト' : '実案件']
-
 const getAllowedExploreFilterValues = (
   items: Work[],
 ): Record<FilterGroupKey, Set<string>> => ({
-  selectedCaseTypes: new Set(items.flatMap(getWorkCaseTypeValues)),
   selectedGenres: new Set(items.map((work) => work.genre).filter(isNonEmptyString)),
   selectedSiteTypes: new Set(items.map((work) => work.siteType).filter(isNonEmptyString)),
   selectedPurposes: new Set(items.map((work) => work.purpose).filter(isNonEmptyString)),
@@ -90,7 +83,6 @@ const filterAllowedValues = (values: string[], allowedValues: Set<string>): stri
 export const sanitizeFilterState = (
   input: Partial<FilterState> | null | undefined = undefined,
 ): FilterState => ({
-  selectedCaseTypes: sanitizeStringList(input?.selectedCaseTypes),
   selectedGenres: sanitizeStringList(input?.selectedGenres),
   selectedSiteTypes: sanitizeStringList(input?.selectedSiteTypes),
   selectedPurposes: sanitizeStringList(input?.selectedPurposes),
@@ -199,7 +191,6 @@ const createSearchIndex = (work: Work): string =>
     ...(work.tags ?? []),
     ...getWorkFeatureValues(work),
     ...getWorkTechnicalSearchValues(work),
-    ...getWorkCaseTypeValues(work),
     work.challenge,
     work.designTone,
   ]
@@ -209,7 +200,6 @@ const createSearchIndex = (work: Work): string =>
     .toLocaleLowerCase('ja')
 
 export const createInitialFilterState = (): FilterState => ({
-  selectedCaseTypes: [],
   selectedGenres: [],
   selectedSiteTypes: [],
   selectedPurposes: [],
@@ -239,10 +229,6 @@ export const sanitizeExploreStateForWorks = (
 
   return {
     ...sanitizedState,
-    selectedCaseTypes: filterAllowedValues(
-      sanitizedState.selectedCaseTypes,
-      allowedValues.selectedCaseTypes,
-    ),
     selectedGenres: filterAllowedValues(
       sanitizedState.selectedGenres,
       allowedValues.selectedGenres,
@@ -331,9 +317,6 @@ const buildExploreSearchParams = (
     params.set(EXPLORE_PARAM_KEYS.query, sanitizedState.query)
   }
 
-  sanitizedState.selectedCaseTypes.forEach((value) => {
-    params.append(EXPLORE_PARAM_KEYS.caseTypes, value)
-  })
   sanitizedState.selectedGenres.forEach((value) => {
     params.append(EXPLORE_PARAM_KEYS.genres, value)
   })
@@ -385,7 +368,6 @@ export const parseExploreState = (search: string): ExploreSerializableState => {
 
   return sanitizeExploreState({
     query: params.get(EXPLORE_PARAM_KEYS.query) ?? '',
-    selectedCaseTypes: params.getAll(EXPLORE_PARAM_KEYS.caseTypes),
     selectedGenres: params.getAll(EXPLORE_PARAM_KEYS.genres),
     selectedSiteTypes: params.getAll(EXPLORE_PARAM_KEYS.siteTypes),
     selectedPurposes: params.getAll(EXPLORE_PARAM_KEYS.purposes),
@@ -407,8 +389,7 @@ export const hasSearchQuery = (query: string): boolean =>
 export const getAppliedFilterCount = (
   filters: FilterState,
 ): number =>
-  filters.selectedCaseTypes.length
-  + filters.selectedGenres.length
+  filters.selectedGenres.length
   + filters.selectedSiteTypes.length
   + filters.selectedPurposes.length
   + filters.selectedFeatures.length
@@ -697,7 +678,6 @@ export const filterWorks = (
   }
 
   return items.filter((work) => {
-    const matchesCaseType = matchesSelectedValues(filters.selectedCaseTypes, getWorkCaseTypeValues(work))
     const matchesGenre = matchesSelectedValues(filters.selectedGenres, [work.genre])
     const matchesSiteType = matchesSelectedValues(filters.selectedSiteTypes, [work.siteType])
     const matchesPurpose = matchesSelectedValues(filters.selectedPurposes, [work.purpose])
@@ -706,8 +686,7 @@ export const filterWorks = (
     const matchesTechTags = matchesSelectedValues(filters.selectedTechTags, getWorkTechnicalFilterValues(work))
 
     return (
-      matchesCaseType
-      && matchesGenre
+      matchesGenre
       && matchesSiteType
       && matchesPurpose
       && matchesFeatures
@@ -753,12 +732,9 @@ export const sortWorks = (
 
   const sorted = [...withIndex].sort((left, right) => {
     if (sortOrder === 'recommended') {
-      // Vanilla版と同じ: isFeatured DESC → isConcept ASC → year DESC → title
+      // isFeatured DESC → year DESC → title
       const featuredDiff = Number(right.item.isFeatured ?? false) - Number(left.item.isFeatured ?? false)
       if (featuredDiff !== 0) return featuredDiff
-
-      const conceptDiff = Number(left.item.isConcept ?? false) - Number(right.item.isConcept ?? false)
-      if (conceptDiff !== 0) return conceptDiff
 
       const yearDiff = sortByYear(left.item, right.item, 'desc')
       if (yearDiff !== 0) return yearDiff
@@ -869,7 +845,6 @@ export const getWorkMultiValueFilterGroup = (
 }
 
 export const getFilterOptions = (items: Work[]): FilterGroup[] => [
-  getWorkMultiValueFilterGroup('selectedCaseTypes', '案件区分', items, getWorkCaseTypeValues),
   getWorkFilterGroup('selectedGenres', 'ジャンル', items, (work) => work.genre),
   getWorkFilterGroup('selectedPurposes', '制作目的', items, (work) => work.purpose),
   getWorkFilterGroup('selectedSiteTypes', 'サイト種別', items, (work) => work.siteType),
