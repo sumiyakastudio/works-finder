@@ -45,7 +45,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://github.com/sumiyakaa"
+                href="https://github.com/sumiyakastudio"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"

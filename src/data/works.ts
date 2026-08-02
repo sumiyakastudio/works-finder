@@ -65,7 +65,7 @@ export const works: Work[] = [
       '施術メニュー・症例・料金・FAQを1ページに整理しつつ、電話予約とWeb予約の2導線を両立させた。',
     designTone: 'クリーン / ライトラグジュアリー',
     detailUrl: './projects/aoki-beauty-clinic/',
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-BeautyClinic/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-BeautyClinic/',
     isConcept: false,
   },
 
@@ -99,7 +99,7 @@ export const works: Work[] = [
       '冒頭のSVG回転演出と多層レイヤーの画像リビールをバニラJSで実装し、ECページまで離脱しにくい流れに整えた。',
     designTone: 'シネマティック / ラグジュアリー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/lp-aoki-standard/',
+    siteUrl: 'https://sumiyakastudio.github.io/lp-aoki-standard/',
     isConcept: false,
   },
 
@@ -133,7 +133,7 @@ export const works: Work[] = [
       '制作・EC・Webアプリの3領域を個別のケーススタディで掘り下げつつ、初見でも相談内容を想像しやすい構成に整えた。',
     designTone: 'シャープ / テック',
     detailUrl: './projects/aoki-tech-studio/',
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-Tech-Studio/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-Tech-Studio/',
     isConcept: false,
   },
 
@@ -167,7 +167,7 @@ export const works: Work[] = [
       'ダークトーンとゴールドのアクセントで静かな店内の雰囲気を伝えながら、メニュー閲覧・予約・SNS連携を自然につないだ。',
     designTone: 'ダーク / クラシック',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/cafe-aoki/',
+    siteUrl: 'https://sumiyakastudio.github.io/cafe-aoki/',
     isConcept: false,
   },
 
@@ -201,7 +201,7 @@ export const works: Work[] = [
       '費用感の可視化で終わらせず、比較保存・共有・相談フォーム連携までを切れ目なくつなぐ体験にまとめた。',
     designTone: 'ダーク / プロダクト',
     detailUrl: './projects/aoki-estimate-simulator/',
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-Mitumori/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-Mitumori/',
     isConcept: false,
   },
 
@@ -235,7 +235,7 @@ export const works: Work[] = [
       '12枚の商品ビジュアルと複数CTAを配置しつつ押し売り感を抑え、モバイルではフローティングCTAがフォーム到達時に自動非表示になる導線を設計した。',
     designTone: 'プレミアム / コンバージョン',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/aoki-lotion-lp/',
+    siteUrl: 'https://sumiyakastudio.github.io/aoki-lotion-lp/',
     isConcept: false,
   },
 
@@ -269,7 +269,7 @@ export const works: Work[] = [
       '高級感あるビジュアルとサロン向けB2B情報（料金プラン・導入実績）を両立し、WordPressテーマとして管理画面からの更新にも対応した。',
     designTone: 'ラグジュアリー / エレガント',
     detailUrl: null,
-    siteUrl: 'https://github.com/sumiyakaa/aokicosmetic-wp',
+    siteUrl: 'https://github.com/sumiyakastudio/aokicosmetic-wp',
     isConcept: false,
   },
 
@@ -303,7 +303,7 @@ export const works: Work[] = [
       'キッズ・ママ・パパ3プランの情報を整理しつつ、講師紹介・料金表・体験予約を自然な流れでつなぎ、家族全員が安心して申し込める導線を設計した。',
     designTone: 'ウォーム / フレンドリー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/aoki-family-english/',
+    siteUrl: 'https://sumiyakastudio.github.io/aoki-family-english/',
     isConcept: false,
   },
 
@@ -337,7 +337,7 @@ export const works: Work[] = [
       '作品5件の個別詳細・サービス案内・採用・ニュースなど12ページの情報量を整理し、ファンタジックな世界観を保ったまま企業サイトとしての実用性を両立させた。',
     designTone: 'クリエイティブ / ファンタジック',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-Animation/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-Animation/',
     isConcept: false,
   },
 
@@ -371,7 +371,7 @@ export const works: Work[] = [
       '賃貸・売買合計6物件のデータ属性ベースのフィルタリング・並び替え、ECサイト風のギャラリーUI（矢印ナビ・スワイプ・モーダル）、3ステップフォームなど多数のVanilla JS機能を実装しつつ、全16ページのデザイン統一性とWCAG AAコントラスト準拠を両立させた。',
     designTone: 'モダンナチュラル / アースカラー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/AokiEstate/',
+    siteUrl: 'https://sumiyakastudio.github.io/AokiEstate/',
     isConcept: false,
   },
 
@@ -405,7 +405,7 @@ export const works: Work[] = [
       'ダークトーンで統一した高級感のあるビジュアルと、料理写真12枚のギャラリー・予約フォームを組み合わせ、世界観を崩さずに来店導線を確保した。',
     designTone: 'ダーク / エレガント',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/BistroAoki/',
+    siteUrl: 'https://sumiyakastudio.github.io/BistroAoki/',
     isConcept: false,
   },
 
@@ -439,7 +439,7 @@ export const works: Work[] = [
       'ビフォーアフター比較・プログラム詳細・料金表など情報量の多いコンテンツを1ページに集約しつつ、CTAへの自然な導線を維持した。',
     designTone: 'ダーク / パワフル',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/AokiGym/',
+    siteUrl: 'https://sumiyakastudio.github.io/AokiGym/',
     isConcept: false,
   },
 
@@ -473,7 +473,7 @@ export const works: Work[] = [
       '堅実な士業の信頼感を保ちつつ、全幅レイアウト・マーキー・エディトリアル型実績表現で情報密度とデザイン差別化を両立させた。',
     designTone: 'フォーマル / エレガント',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/AokiTax/',
+    siteUrl: 'https://sumiyakastudio.github.io/AokiTax/',
     isConcept: false,
   },
 
@@ -507,7 +507,7 @@ export const works: Work[] = [
       '12ページ×3言語の大規模構成を、WordPress移行を見据えた保守性の高い設計で統一しつつ、症例フィルタリングや多言語SEOなど機能面も両立させた。',
     designTone: 'ダーク / ラグジュアリー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-BeautyClinic-No2/ja/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-BeautyClinic-No2/ja/',
     isConcept: false,
   },
 
@@ -541,7 +541,7 @@ export const works: Work[] = [
       '手書き書体×自然素材トーンの温かみあるデザインを全13ページで統一しつつ、見積シミュレーター・施工事例フィルター・ビフォーアフターUIなど実用的なJS機能を多数実装した。',
     designTone: 'ウォーム / ナチュラル',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-Reform/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-Reform/',
     isConcept: false,
   },
 
@@ -575,7 +575,7 @@ export const works: Work[] = [
       '新聞エディトリアル調のレイアウトとヴィンテージ工業トーンで重厚なブランド世界観を構築しつつ、英日2言語の全10ページで情報設計とデザインの統一性を維持した。',
     designTone: 'ヴィンテージ / エディトリアル',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/caldwell-sons/',
+    siteUrl: 'https://sumiyakastudio.github.io/caldwell-sons/',
     isConcept: false,
   },
 
@@ -609,7 +609,7 @@ export const works: Work[] = [
       '全セクションにGSAP ScrollTriggerのアニメーションを実装しながら、prefers-reduced-motion対応やARIA属性など品質・アクセシビリティ基準を両立させた。',
     designTone: 'ダークミニマル / ラグジュアリー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/Aoki-Atelier/',
+    siteUrl: 'https://sumiyakastudio.github.io/Aoki-Atelier/',
     isConcept: false,
   },
 
@@ -659,7 +659,7 @@ export const works: Work[] = [
       '既存の高品質ブランドサイトを実測（配色・タイポ・余白・モーションを数値で抽出）し、印象でなく実データを基準に本物品質へ寄せた。装飾色を持たず写真とタイポで見せる設計とし、モール誘引は商標を使わず自作の線画アイコンで表現してブランドの上質さと販促を両立させた。',
     designTone: 'ミニマル / エディトリアル・ラグジュアリー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/suigen-lotion/',
+    siteUrl: 'https://sumiyakastudio.github.io/suigen-lotion/',
     isConcept: true,
   },
 
@@ -706,7 +706,7 @@ export const works: Work[] = [
       '“ただ縦に積むだけ”にならない没入感を、全デバイスで破綻させずに出すことに注力した。reveal／clipはCSSトランジション＋クラス付与方式に統一し、固定全画面ブレンドや重い画像デコードを排してスクロールの引っかかりを解消した。',
     designTone: 'ボールド / ヴィンテージ・モダン',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/regent-beverage/',
+    siteUrl: 'https://sumiyakastudio.github.io/regent-beverage/',
     isConcept: true,
   },
 
@@ -754,7 +754,7 @@ export const works: Work[] = [
       '「塗装より安く、建物にやさしい洗浄」という代替提案を、言葉ではなく体験で伝えるため、全幅のBefore/Afterスライダーを看板に据えた。clip-path insetとrange入力で実装し、iOS Safariで不具合の出やすい手法を避けて全デバイスの安定表示を担保した。',
     designTone: 'クリーン / マリンブルー',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/reclear/',
+    siteUrl: 'https://sumiyakastudio.github.io/reclear/',
     isConcept: false,
   },
 
@@ -803,7 +803,7 @@ export const works: Work[] = [
       'タイポグラフィ主導の構成と、スクロール連動で特徴を1つずつ固定表示する演出・速度差のパララックスを、iOSを含む各環境で崩れない手法に翻訳して実装した。料金シミュレーターではWebフォントをサブセット埋め込みして日本語PDFの文字化けを解消している。',
     designTone: 'ミニマル / プレミアム（無彩色）',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/hidamari-dental/',
+    siteUrl: 'https://sumiyakastudio.github.io/hidamari-dental/',
     isConcept: false,
   },
 
@@ -851,7 +851,7 @@ export const works: Work[] = [
       '一般的な幼稚園サイトの予定調和を避け、子どもの「不思議！」が弾けるような密度の高いポップ表現に振り切りつつ、保護者が求める安心感も損なわないトーンに整えた。多数の装飾を載せても破綻しないよう、SPでの装飾間引きとレスポンシブ3段で全デバイスの安定表示を担保した。',
     designTone: 'ポップ / カラフル',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/morinoko-kindergarten/',
+    siteUrl: 'https://sumiyakastudio.github.io/morinoko-kindergarten/',
     isConcept: false,
   },
 
@@ -897,7 +897,7 @@ export const works: Work[] = [
       'サイト訪問者のほぼ全員が保護者である点を起点に、画面の向こうだけでなく現実世界のユーザー行動まで設計した。親がトップページで安心し、ゲームページで子どもが体験し、親子双方が納得して問い合わせに進む導線を一気通貫でつないだ。',
     designTone: 'ポップ / ピクセルアート',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/codequest/',
+    siteUrl: 'https://sumiyakastudio.github.io/codequest/',
     isConcept: false,
   },
 
@@ -946,7 +946,7 @@ export const works: Work[] = [
       '「作品を並べる」ではなく「条件から見つける」ツールとして、4軸の絞り込みと検索・ソート・比較を1画面で完結させた。探索状態をURLとローカルストレージの双方に持たせ、リロードしても共有しても同じ結果に戻る設計にしている。',
     designTone: 'ダーク / プロダクト',
     detailUrl: null,
-    siteUrl: 'https://sumiyakaa.github.io/works-finder/',
+    siteUrl: 'https://sumiyakastudio.github.io/works-finder/',
     isConcept: false,
   },
 ]
